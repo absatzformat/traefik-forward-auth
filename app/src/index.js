@@ -6,7 +6,12 @@ import config from './config.js';
 // read secure file
 const secureData = utils.readJsonFile(config.authFile);
 
-// check if an ip is whitelisted
+/**
+ * Check if an ip is whitelisted
+ * @param {string} address 
+ * @param {string} host 
+ * @return {boolean}
+ */
 const isIpWhitelisted = (address, host) => {
 
 	// TODO: ip range validation
@@ -31,6 +36,13 @@ const isIpWhitelisted = (address, host) => {
 	return false;
 };
 
+/**
+ * 
+ * @param {string} host 
+ * @param {string} user 
+ * @param {string} password 
+ * @return {string}
+ */
 const getAuthHash = (host, user, password) => {
 
 	const sha1 = crypto.createHmac('sha1', password);
@@ -39,7 +51,13 @@ const getAuthHash = (host, user, password) => {
 	return hash;
 };
 
-// check auth hash against secure data
+/**
+ * Check auth hash against secure data
+ * @param {string} username 
+ * @param {string} hash 
+ * @param {string} host 
+ * @return {boolean}
+ */
 const isHashValid = (username, hash, host) => {
 
 	// global users
@@ -47,9 +65,9 @@ const isHashValid = (username, hash, host) => {
 
 		if (secureData.users[username]) {
 
-			const authHash = getAuthHash(host, username, secureData.users[username]);
+			const globalUserHash = getAuthHash(host, username, secureData.users[username]);
 
-			if (authHash === hash) {
+			if (globalUserHash === hash) {
 				return true;
 			}
 		}
@@ -64,9 +82,9 @@ const isHashValid = (username, hash, host) => {
 
 			if (hostUsers[username]) {
 
-				const authHash = getAuthHash(host, username, hostUsers[username]);
+				const hostUserHash = getAuthHash(host, username, hostUsers[username]);
 
-				if (authHash === hash) {
+				if (hostUserHash === hash) {
 					return true;
 				}
 			}
@@ -78,13 +96,14 @@ const isHashValid = (username, hash, host) => {
 
 /**
  * @param {NginxHTTPRequest} request 
+ * @return {void}
  */
 const handle = (request) => {
 
 	const headers = request.headersIn;
 
 	const remoteAddress = headers['X-Forwarded-For'] || request.remoteAddress;
-	const host = headers['X-Forwarded-Host'] || headers['Host'] || null;
+	const host = headers['X-Forwarded-Host'] || headers['Host'] || '';
 
 	// ip whitelist
 	if (isIpWhitelisted(remoteAddress, host)) {
@@ -137,7 +156,7 @@ const handle = (request) => {
 	}
 
 	// show login
-	fs.promises.readFile('/app/login.html').then((data) => {
+	fs.promises.readFile(config.sendFile).then((data) => {
 		request.headersOut['Content-Type'] = 'text/html';
 		request.return(403, data);
 	});
