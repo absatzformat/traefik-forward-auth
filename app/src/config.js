@@ -1,4 +1,6 @@
 export default {
 
-	cookieName: 'proxy-auth'
+	authFile: '/app/secure.json',
+	cookieName: 'proxy-auth',
+	cookieSecure: true
 };

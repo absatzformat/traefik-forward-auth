@@ -1,9 +1,10 @@
 import fs from 'fs';
+import crypto from 'crypto';
 import utils from './utils.js';
 import config from './config.js';
 
 // read secure file
-const secureData = utils.readJsonFile('/app/secure.json');
+const secureData = utils.readJsonFile(config.authFile);
 
 // check if an ip is whitelisted
 const isIpWhitelisted = (address, host) => {
@@ -30,14 +31,27 @@ const isIpWhitelisted = (address, host) => {
 	return false;
 };
 
-// check user and password against secure data
-const isLoginValid = (username, password, host) => {
+const getAuthHash = (host, user, password) => {
+
+	const sha1 = crypto.createHmac('sha1', password);
+	const hash = sha1.update(user + '@' + host).digest('hex');
+
+	return hash;
+};
+
+// check auth hash against secure data
+const isHashValid = (username, hash, host) => {
 
 	// global users
 	if (secureData.users) {
 
-		if (secureData.users[username] && secureData.users[username] === password) {
-			return true;
+		if (secureData.users[username]) {
+
+			const authHash = getAuthHash(host, username, secureData.users[username]);
+
+			if (authHash === hash) {
+				return true;
+			}
 		}
 	}
 
@@ -48,8 +62,13 @@ const isLoginValid = (username, password, host) => {
 
 			const hostUsers = secureData.hosts[host].users;
 
-			if (hostUsers[username] && hostUsers[username] === password) {
-				return true;
+			if (hostUsers[username]) {
+
+				const authHash = getAuthHash(host, username, hostUsers[username]);
+
+				if (authHash === hash) {
+					return true;
+				}
 			}
 		}
 	}
@@ -81,9 +100,9 @@ const handle = (request) => {
 
 			const decoded = Buffer.from(token, 'base64url').toString().split(':');
 			const username = decoded[0];
-			const password = decoded[1];
+			const hash = decoded[1];
 
-			if (isLoginValid(username, password, host)) {
+			if (isHashValid(username, hash, host)) {
 				return request.return(204);
 			}
 		}
@@ -93,13 +112,28 @@ const handle = (request) => {
 	const authUser = headers['X-Auth-User'] || null;
 	const authPassword = headers['X-Auth-Password'] || null;
 
-	if (isLoginValid(authUser, authPassword, host)) {
+	if (authUser && authPassword) {
 
-		const value = `${authUser}:${authPassword}`.toString('base64url');
-		const cookie = `${config.cookieName}=${value}; Path=/; Secure; HttpOnly`;
+		const authHash = getAuthHash(host, authUser, authPassword);
 
-		request.headersOut['Set-Cookie'] = cookie;
-		return request.return(304); // need to use non 2xx status here, so that traefik returns cookie header
+		if (isHashValid(authUser, authHash, host)) {
+
+			const cookieValue = `${authUser}:${authHash}`.toString('base64url');
+
+			const cookieData = [
+				config.cookieName + '=' + cookieValue,
+				'Path=/',
+				'HttpOnly',
+				'SameSite=Strict'
+			];
+
+			if (config.cookieSecure) {
+				cookieData.push('Secure');
+			}
+
+			request.headersOut['Set-Cookie'] = cookieData.join(';');
+			return request.return(304); // need to use non 2xx status here, so that traefik returns cookie header
+		}
 	}
 
 	// show login
