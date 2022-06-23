@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Login</title>
+	<style>
+		:root {
+			--color-primary: #e72d4b;
+			--color-secondary: #d42845;
+			--color-background: #f2f4f5;
+		}
+
+		body {
+			margin: 0;
+			background-color: var(--color-background);
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+			color: #666;
+		}
+
+		#login-wrapper {
+			width: 100%;
+			height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 0 20px;
+			box-sizing: border-box;
+		}
+
+		.login-box {
+			width: 400px;
+			max-width: 100%;
+		}
+
+		@media (min-height: 600px) {
+			.login-box {
+				margin-top: -10vh;
+			}
+		}
+
+		.login-box h1 {
+			text-align: center;
+			margin: 0;
+			margin-bottom: 30px;
+			font-weight: 500;
+		}
+
+		.login-realm {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		#login-message {
+			text-align: center;
+			margin-bottom: 10px;
+			background-color: var(--color-background);
+			padding: 10px;
+			display: none;
+			font-size: 14px;
+			border-radius: 2px;
+		}
+
+		.login-box>.upper {
+			background-color: #fff;
+			padding: 40px;
+			box-shadow: 0px 10px 34px -15px rgba(0, 0, 0, 0.24);
+		}
+
+		.login-box>.lower {
+			font-size: 12px;
+			text-align: center;
+			padding: 12px 0;
+			color: #999;
+		}
+
+		.login-box>.lower a {
+			color: inherit;
+			text-decoration: dashed;
+		}
+
+		.login-box>.lower a:hover {
+			color: #666;
+		}
+
+		.login-box button {
+			border-radius: 2px;
+			border: none;
+			appearance: none;
+			padding: 0 20px;
+			outline: none;
+			height: 46px;
+			box-sizing: border-box;
+			width: 100%;
+			background-color: var(--color-primary);
+			font-weight: 600;
+			color: #fff;
+			font-family: inherit;
+			font-size: 18px;
+			margin-top: 20px;
+		}
+
+		.login-box button:hover,
+		.login-box button:focus {
+			background-color: var(--color-secondary);
+		}
+
+		.login-box label {
+			display: block;
+			font-size: 14px;
+			margin-bottom: 10px;
+		}
+
+		.login-box label span {
+			display: inline-block;
+			margin-bottom: 6px;
+		}
+
+		.login-box input {
+			border-radius: 2px;
+			border: 1px solid #ccc;
+			outline: none;
+			display: block;
+			box-sizing: border-box;
+			width: 100%;
+			padding: 0 10px;
+			height: 40px;
+			color: #666;
+			font-family: inherit;
+			font-weight: 600;
+			font-size: 16px
+		}
+
+		.login-box input:focus {
+			border-color: var(--color-primary);
+		}
+
+		.icon-lock {
+			width: 80px;
+			height: 80px;
+			position: relative;
+			overflow: hidden;
+			margin: auto;
+			margin-bottom: 20px;
+		}
+
+		.icon-lock .lock-top-1 {
+			width: 40%;
+			height: 40%;
+			position: absolute;
+			left: 50%;
+			margin-left: -20%;
+			top: 14%;
+			background-color: var(--color-primary);
+			border-radius: 40%;
+		}
+
+		.icon-lock .lock-top-2 {
+			width: 24%;
+			height: 40%;
+			position: absolute;
+			left: 50%;
+			margin-left: -12%;
+			top: 22%;
+			background-color: #fff;
+			border-radius: 25%;
+		}
+
+		.icon-lock .lock-body {
+			width: 60%;
+			height: 48%;
+			position: absolute;
+			left: 50%;
+			margin-left: -30%;
+			bottom: 11%;
+			background-color: var(--color-primary);
+			border-radius: 15%;
+		}
+
+		.icon-lock .lock-hole {
+			width: 16%;
+			height: 16%;
+			position: absolute;
+			left: 50%;
+			margin-left: -8%;
+			top: 51%;
+			border-radius: 100%;
+			background-color: #fff;
+		}
+
+		.icon-lock .lock-hole:after {
+			content: "";
+			width: 43%;
+			height: 78%;
+			position: absolute;
+			left: 50%;
+			margin-left: -20%;
+			top: 100%;
+			background-color: inherit;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="login-wrapper">
+		<div class="login-box">
+			<div class="upper">
+				<!-- <h1>Anmeldung</h1> -->
+				<div class="icon-lock">
+					<div class="lock-top-1"></div>
+					<div class="lock-top-2"></div>
+					<div class="lock-body"></div>
+					<div class="lock-hole"></div>
+				  </div>
+				<div class="login-realm">
+					Die angeforderte Ressource benötigt eine Authentifizierung.
+				</div>
+				<form id="login-form" action="" method="post">
+					<div id="login-message"></div>
+					<label>
+						<span>Benutzer</span>
+						<input id="login-username" name="username" type="text" value="">
+					</label>
+					<label>
+						<span>Passwort</span>
+						<input id="login-password" name="password" type="password" value="">
+					</label>
+					<button id="login-button" type="submit">Login</button>
+				</form>
+			</div>
+			<div class="lower">
+				<a href="https://absatzprojekt.de">Absatzprojekt</a> by <a href="https://absatzformat.de"
+					target="_blank">Absatzformat
+					GmbH</a>
+			</div>
+		</div>
+	</div>
+	<script>
+		(function () {
+
+			'use strict';
+
+			var message = document.getElementById('login-message');
+			var form = document.getElementById('login-form');
+			var username = document.getElementById('login-username');
+			var password = document.getElementById('login-password');
+
+			form.addEventListener('submit', function (e) {
+
+				e.preventDefault();
+
+				var user = username.value;
+				var pass = password.value;
+
+				password.value = '';
+
+				message.style.display = 'none';
+				message.innerHTML = '';
+
+				var xhr = new XMLHttpRequest();
+
+				xhr.addEventListener('readystatechange', function (r) {
+
+					if (xhr.readyState === XMLHttpRequest.DONE) {
+						if (xhr.status === 304) {
+							window.location.reload();
+						}
+						else {
+							message.style.display = 'block';
+							message.innerHTML = 'Login war nicht erfolgreich';
+						}
+					}
+				});
+
+				xhr.open('GET', '');
+				xhr.setRequestHeader('X-Auth-User', user);
+				xhr.setRequestHeader('X-Auth-Password', pass);
+				xhr.send();
+			});
+		})();
+	</script>
+</body>
+
+</html>
