@@ -13,6 +13,11 @@
 			--color-background: #f2f4f5;
 		}
 
+		html,
+		body {
+			height: 100%;
+		}
+
 		body {
 			margin: 0;
 			background-color: var(--color-background);
@@ -22,23 +27,16 @@
 
 		#login-wrapper {
 			width: 100%;
-			height: 100vh;
+			height: 100%;
 			display: flex;
-			align-items: center;
-			justify-content: center;
 			padding: 0 20px;
 			box-sizing: border-box;
 		}
 
 		.login-box {
+			/* padding-top: 20px; */
+			margin: auto;
 			width: 400px;
-			max-width: 100%;
-		}
-
-		@media (min-height: 600px) {
-			.login-box {
-				margin-top: -10vh;
-			}
 		}
 
 		.login-box h1 {
@@ -213,7 +211,7 @@
 					<div class="lock-top-2"></div>
 					<div class="lock-body"></div>
 					<div class="lock-hole"></div>
-				  </div>
+				</div>
 				<div class="login-realm">
 					Die angeforderte Ressource benötigt eine Authentifizierung.
 				</div>
@@ -231,55 +229,55 @@
 				</form>
 			</div>
 			<div class="lower">
-				<a href="https://absatzprojekt.de">Absatzprojekt</a> by <a href="https://absatzformat.de"
-					target="_blank">Absatzformat
-					GmbH</a>
+				&copy;
+				<script>document.write((new Date()).getFullYear())</script> <a href="https://absatzformat.de"
+					target="_blank">Absatzformat GmbH</a>
 			</div>
 		</div>
 	</div>
 	<script>
-		(function () {
+			(function () {
 
-			'use strict';
+				'use strict';
 
-			var message = document.getElementById('login-message');
-			var form = document.getElementById('login-form');
-			var username = document.getElementById('login-username');
-			var password = document.getElementById('login-password');
+				var message = document.getElementById('login-message');
+				var form = document.getElementById('login-form');
+				var username = document.getElementById('login-username');
+				var password = document.getElementById('login-password');
 
-			form.addEventListener('submit', function (e) {
+				form.addEventListener('submit', function (e) {
 
-				e.preventDefault();
+					e.preventDefault();
 
-				var user = username.value;
-				var pass = password.value;
+					var user = username.value;
+					var pass = password.value;
 
-				password.value = '';
+					password.value = '';
 
-				message.style.display = 'none';
-				message.innerHTML = '';
+					message.style.display = 'none';
+					message.innerHTML = '';
 
-				var xhr = new XMLHttpRequest();
+					var xhr = new XMLHttpRequest();
 
-				xhr.addEventListener('readystatechange', function (r) {
+					xhr.addEventListener('readystatechange', function (r) {
 
-					if (xhr.readyState === XMLHttpRequest.DONE) {
-						if (xhr.status === 304) {
-							window.location.reload();
+						if (xhr.readyState === XMLHttpRequest.DONE) {
+							if (xhr.status === 304) {
+								window.location.reload();
+							}
+							else {
+								message.style.display = 'block';
+								message.innerHTML = 'Login war nicht erfolgreich';
+							}
 						}
-						else {
-							message.style.display = 'block';
-							message.innerHTML = 'Login war nicht erfolgreich';
-						}
-					}
+					});
+
+					xhr.open('GET', '');
+					xhr.setRequestHeader('X-Auth-User', user);
+					xhr.setRequestHeader('X-Auth-Password', pass);
+					xhr.send();
 				});
-
-				xhr.open('GET', '');
-				xhr.setRequestHeader('X-Auth-User', user);
-				xhr.setRequestHeader('X-Auth-Password', pass);
-				xhr.send();
-			});
-		})();
+			})();
 	</script>
 </body>
 
