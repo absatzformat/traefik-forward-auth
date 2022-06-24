@@ -51,7 +51,7 @@
 
 		.login-realm {
 			text-align: center;
-			margin-bottom: 20px;
+			margin-bottom: 30px;
 		}
 
 		#login-message {
@@ -142,7 +142,7 @@
 		}
 
 		.login-box .top-spacer {
-			margin-bottom: 40px;
+			margin-bottom: 30px;
 		}
 
 		#login-logo {
@@ -180,6 +180,20 @@
 		#login-loader {
 			display: none;
 		}
+
+		#login-info {
+			display: inline-block;
+			text-decoration: none;
+			width: 16px;
+			height: 16px;
+			text-align: center;
+			line-height: 16px;
+			border-radius: 50%;
+			margin-right: -20px;
+			color: var(--color-primary);
+			border: 2px solid var(--color-primary);
+			user-select: none;
+		}
 	</style>
 </head>
 
@@ -200,10 +214,15 @@
 					</div>
 				</div>
 				<div class="login-realm">
-					<b>
-						<script>document.write(window.location.hostname)</script>
-					</b> benötigt eine Authentifizierung.
-					<!-- <a href="">Weshalb?</a> -->
+					<div>
+						<b>
+							<script>document.write(window.location.hostname)</script>
+						</b>
+					</div>
+					benötigt eine Authentifizierung.
+					<sup>
+						<a id="login-info" href="#"><b>?</b></a>
+					</sup>
 				</div>
 				<form id="login-form" action="" method="get">
 					<div id="login-message"></div>
@@ -237,6 +256,15 @@
 
 				var logo = document.getElementById('login-logo');
 				var loader = document.getElementById('login-loader');
+				var info = document.getElementById('login-info');
+
+				info.addEventListener('click', function (e) {
+
+					e.preventDefault();
+
+					message.innerHTML = 'Unsere Kundenprojekte sind geschützt, damit sie nicht von Dritten eingesehen werden können.';
+					message.style.display = 'block';
+				});
 
 				form.addEventListener('submit', function (e) {
 
@@ -263,7 +291,7 @@
 							}
 							else {
 								message.style.display = 'block';
-								message.innerHTML = 'Anmeldung war nicht erfolgreich';
+								message.innerHTML = 'Anmeldung war nicht erfolgreich.';
 
 								loader.style.display = 'none';
 								logo.style.display = 'block';
