@@ -45,8 +45,8 @@ const isIpWhitelisted = (address, host) => {
  */
 const getAuthHash = (host, user, password) => {
 
-	const sha1 = crypto.createHmac('sha1', password);
-	const hash = sha1.update(user + '@' + host).digest('hex');
+	const hmac = crypto.createHmac('sha256', password);
+	const hash = hmac.update(user + '@' + host).digest('hex');
 
 	return hash;
 };
