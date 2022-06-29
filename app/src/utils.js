@@ -3,7 +3,7 @@ import fs from 'fs';
 /**
  * 
  * @param {string} cstring 
- * @return {Object}
+ * @return {object}
  */
 const getCookies = (cstring) => {
 
@@ -33,11 +33,11 @@ const getCookieByName = (name, cstring) => {
 /**
  * 
  * @param {string} file 
- * @return {Object}
+ * @return {Promise}
  */
-const readJsonFile = (file) => {
+const readJsonFile = async (file) => {
 
-	const json = fs.readFileSync(file, 'utf8');
+	const json = await fs.promises.readFile(file, 'utf8');
 	return JSON.parse(json);
 };
 

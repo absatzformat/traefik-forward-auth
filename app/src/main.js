@@ -3,16 +3,14 @@ import crypto from 'crypto';
 import utils from './utils.js';
 import config from './config.js';
 
-// read secure file
-const secureData = utils.readJsonFile(config.authFile);
-
 /**
  * Check if an ip is whitelisted
  * @param {string} address 
  * @param {string} host 
+ * @param {object} secureData 
  * @return {boolean}
  */
-const isIpWhitelisted = (address, host) => {
+const isIpWhitelisted = (address, host, secureData) => {
 
 	// TODO: ip range validation
 
@@ -56,9 +54,10 @@ const getAuthHash = (host, user, password) => {
  * @param {string} username 
  * @param {string} hash 
  * @param {string} host 
+ * @param {object} secureData 
  * @return {boolean}
  */
-const isHashValid = (username, hash, host) => {
+const isHashValid = (username, hash, host, secureData) => {
 
 	// global users
 	if (secureData.users) {
@@ -98,15 +97,18 @@ const isHashValid = (username, hash, host) => {
  * @param {NginxHTTPRequest} request 
  * @return {void}
  */
-const handle = (request) => {
+const handle = async (request) => {
 
 	const headers = request.headersIn;
 
 	const remoteAddress = headers['X-Forwarded-For'] || request.remoteAddress;
 	const host = headers['X-Forwarded-Host'] || headers['Host'] || '';
 
+	// read secure file
+	const secureData = await utils.readJsonFile(config.authFile);
+
 	// ip whitelist
-	if (isIpWhitelisted(remoteAddress, host)) {
+	if (isIpWhitelisted(remoteAddress, host, secureData)) {
 		return request.return(204);
 	}
 
@@ -121,7 +123,7 @@ const handle = (request) => {
 			const username = decoded[0];
 			const hash = decoded[1];
 
-			if (isHashValid(username, hash, host)) {
+			if (isHashValid(username, hash, host, secureData)) {
 				return request.return(204);
 			}
 		}
@@ -135,7 +137,7 @@ const handle = (request) => {
 
 		const authHash = getAuthHash(host, authUser, authPassword);
 
-		if (isHashValid(authUser, authHash, host)) {
+		if (isHashValid(authUser, authHash, host, secureData)) {
 
 			const cookieValue = `${authUser}:${authHash}`.toString('base64url');
 
@@ -156,10 +158,10 @@ const handle = (request) => {
 	}
 
 	// show login
-	fs.promises.readFile(config.sendFile).then((data) => {
-		request.headersOut['Content-Type'] = 'text/html';
-		request.return(403, data);
-	});
+	const fileData = await fs.promises.readFile(config.sendFile);
+
+	request.headersOut['Content-Type'] = 'text/html';
+	request.return(403, fileData);
 };
 
 export default { handle };
