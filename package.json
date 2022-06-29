@@ -1,0 +1,25 @@
+{
+  "name": "traefik-forward-auth",
+  "version": "1.0.0",
+  "description": "Simple forward auth service for Traefik Proxy.",
+  "main": "main.js",
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.7.4"
+  },
+  "scripts": {
+    "build": "rimraf ./build && tsc",
+    "start": "npm run build && node ./build/main.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/absatzformat/traefik-forward-auth.git"
+  },
+  "author": "Johannes Rabausch",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/absatzformat/traefik-forward-auth/issues"
+  },
+  "homepage": "https://github.com/absatzformat/traefik-forward-auth#readme"
+}

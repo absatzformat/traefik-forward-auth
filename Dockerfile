@@ -1,6 +1,4 @@
-FROM nginx:alpine
-
-COPY ./nginx/nginx.conf /etc/nginx/nginx.conf
+FROM node:alpine
 
 WORKDIR /app
 
@@ -9,3 +7,5 @@ COPY ./app .
 USER nobody
 
 EXPOSE 80
+
+CMD ["node", "main.js"]

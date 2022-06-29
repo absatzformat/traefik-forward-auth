@@ -1,0 +1,12 @@
+version: '3.1'
+services:
+  auth:
+    image: node:alpine
+    restart: unless-stopped
+    command: "node /app/main.js"
+    ports:
+      - 80:80
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - ./build/:/app
