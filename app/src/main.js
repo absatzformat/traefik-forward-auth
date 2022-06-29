@@ -105,7 +105,14 @@ const handle = async (request) => {
 	const host = headers['X-Forwarded-Host'] || headers['Host'] || '';
 
 	// read secure file
-	const secureData = await utils.readJsonFile(config.authFile);
+	try {
+		var secureData = await utils.readJsonFile(config.authFile);
+
+	} catch (error) {
+
+		request.headersOut['Content-Type'] = 'text/plain';
+		return request.return(500, 'Unable to load secure file');
+	}
 
 	// ip whitelist
 	if (isIpWhitelisted(remoteAddress, host, secureData)) {
@@ -158,10 +165,17 @@ const handle = async (request) => {
 	}
 
 	// show login
-	const fileData = await fs.promises.readFile(config.sendFile);
+	try {
+		const fileData = await fs.promises.readFile(config.sendFile);
 
-	request.headersOut['Content-Type'] = 'text/html';
-	request.return(403, fileData);
+		request.headersOut['Content-Type'] = 'text/html';
+		request.return(403, fileData);
+
+	} catch (error) {
+
+		request.headersOut['Content-Type'] = 'text/plain';
+		request.return(500, 'Unable to load login file');
+	}
 };
 
 export default { handle };
