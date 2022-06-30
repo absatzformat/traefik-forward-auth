@@ -5,9 +5,9 @@
       "es6"
     ],
     "module": "commonjs",
-    "rootDir": "src/ts",
+    "rootDir": "ts",
     "resolveJsonModule": true,
-    "outDir": "build",
+    "outDir": "../../build",
     "esModuleInterop": true,
     "preserveSymlinks": true,
     "forceConsistentCasingInFileNames": true,
