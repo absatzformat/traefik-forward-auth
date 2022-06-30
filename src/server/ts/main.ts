@@ -1,85 +1,7 @@
-import http, { IncomingMessage, RequestListener, ServerResponse } from 'http';
+import http, { IncomingMessage, ServerResponse } from 'http';
 import fs from 'fs/promises';
-import crypto from 'crypto';
-import utils from './utils';
+import { getAuthHash, getCookieByName, getRequestHeader, isHashValid, isIpWhitelisted } from './functions';
 import config from './config';
-
-const isIpWhitelisted = (address: string, host: string, secureData: SecureData): boolean => {
-
-	if (
-		utils.isPrivateIp(address) ||
-		(secureData.ipwhitelist && secureData.ipwhitelist.indexOf(address) >= 0)
-	) {
-		return true
-	}
-
-	// host ip whitelist
-	if (secureData.hosts && secureData.hosts[host]) {
-
-		const hostData = secureData.hosts[host];
-
-		if (hostData.ipwhitelist && hostData.ipwhitelist.indexOf(address) >= 0) {
-			return true;
-		}
-	}
-
-	return false;
-};
-
-const getAuthHash = (host: string, user: string, password: string): string => {
-
-	const hmac = crypto.createHmac('sha256', password);
-	const hash = hmac.update(user + '@' + host).digest('hex');
-
-	return hash;
-};
-
-const isHashValid = (username: string, hash: string, host: string, secureData: SecureData): boolean => {
-
-	// host users
-	if (secureData.hosts && secureData.hosts[host]) {
-
-		if (secureData.hosts[host].users) {
-
-			const hostUsers = secureData.hosts[host].users;
-
-			if (hostUsers && hostUsers[username]) {
-
-				const hostUserHash = getAuthHash(host, username, hostUsers[username]);
-
-				if (hostUserHash === hash) {
-					return true;
-				}
-			}
-		}
-	}
-
-	// global users
-	if (secureData.users) {
-
-		if (secureData.users[username]) {
-
-			const globalUserHash = getAuthHash(host, username, secureData.users[username]);
-
-			if (globalUserHash === hash) {
-				return true;
-			}
-		}
-	}
-
-	return false;
-};
-
-const getRequestHeader = (headerName: string, request: IncomingMessage): string | null => {
-
-	const header = request.headers[headerName];
-
-	if (Array.isArray(header)) {
-		return header[0] || null;
-	}
-
-	return header ?? null;
-}
 
 const requestHandler = async (request: IncomingMessage, response: ServerResponse): Promise<void> => {
 
@@ -110,7 +32,7 @@ const requestHandler = async (request: IncomingMessage, response: ServerResponse
 	// check auth cookie
 	if (headers['cookie']) {
 
-		const token = utils.getCookieByName(config.cookieName, headers['cookie']);
+		const token = getCookieByName(config.cookieName, headers['cookie']);
 
 		if (token) {
 
