@@ -10,7 +10,7 @@ module.exports = {
 	user_label: 'Benutzer',
 	password_label: 'Passwort',
 	login_text: 'Anmelden',
-	login_footer: `&copy; <script>document.write((new Date()).getFullYear())</script> <a href="https://absatzformat.de"
+	login_footer: `&copy;&nbsp;<script>document.write((new Date()).getFullYear())</script>&nbsp;<a href="https://absatzformat.de"
 		target="_blank">Absatzformat GmbH</a> - <a href="https://absatzformat.de/datenschutz"
 		target="_blank">Datenschutz</a>`
 };
