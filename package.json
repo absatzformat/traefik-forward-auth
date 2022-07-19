@@ -16,7 +16,7 @@
   },
   "scripts": {
     "build:server": "tsc -p ./src/server/tsconfig.json",
-    "build:client:js": "mkdirp ./build && tsc -p ./src/client/tsconfig.json --outFile ./build/client.js && terser ./build/client.js --format inline_script=true,max_line_len=120 -o ./build/client.js",
+    "build:client:js": "mkdirp ./build && tsc -p ./src/client/tsconfig.json --outFile ./build/client.js && terser ./build/client.js --compress --mangle --format inline_script=true,max_line_len=120 -o ./build/client.js",
     "build:client:css": "mkdirp ./build && lessc ./src/client/style.less | uglifycss --max-line-len 120 > ./build/style.css",
     "build:client": "(npm run build:client:css & npm run build:client:js) && mustache ./src/view.js ./src/client/login.mustache | html-minifier --collapse-whitespace -o ./build/login.html",
     "build": "rimraf ./build && (npm run build:server & npm run build:client)",
