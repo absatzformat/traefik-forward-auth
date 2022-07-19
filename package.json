@@ -20,7 +20,7 @@
     "build:client:css": "mkdirp ./build && lessc ./src/client/style.less | uglifycss --max-line-len 120 > ./build/style.css",
     "build:client": "(npm run build:client:css & npm run build:client:js) && mustache ./src/view.js ./src/client/login.mustache | html-minifier --collapse-whitespace -o ./build/login.html",
     "build": "rimraf ./build && (npm run build:server & npm run build:client)",
-    "start": "npm run build && node ./build/main.js"
+    "start": "AUTH_FILE=./secure.json node ./build/main.js"
   },
   "repository": {
     "type": "git",
