@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es6",
     "lib": [
       "es6"
     ],
@@ -9,10 +9,8 @@
     "resolveJsonModule": true,
     "outDir": "../../build",
     "esModuleInterop": true,
-    "preserveSymlinks": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "noImplicitAny": true,
-    "skipLibCheck": true
+    "noImplicitAny": true
   }
 }
