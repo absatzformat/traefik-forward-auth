@@ -9,11 +9,14 @@
 	const loader = document.getElementById('login-loader')!;
 	const info = document.getElementById('login-info')!;
 
+	const infoMeta = document.querySelector('meta[name="x-info-message"]') as HTMLMetaElement;
+	const failedMeta = document.querySelector('meta[name="x-failed-message"]') as HTMLMetaElement
+
 	info.addEventListener('click', e => {
 
 		e.preventDefault();
 
-		message.innerHTML = 'Unsere Kundenprojekte sind geschützt, damit sie nicht von Dritten eingesehen werden können.';
+		message.innerHTML = infoMeta.content;
 		message.style.display = 'block';
 	});
 
@@ -42,7 +45,7 @@
 				}
 				else {
 					message.style.display = 'block';
-					message.innerHTML = 'Anmeldung war nicht erfolgreich.';
+					message.innerHTML = failedMeta.content;
 
 					loader.style.display = 'none';
 					logo.style.display = 'block';
